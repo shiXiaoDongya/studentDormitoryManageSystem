@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.SystemMapper">
+	<update id="updatePass">
+		<if test="param1=='student'">
+			update student set student_userPass=#{1} where student_id=#{2}
+		</if>
+		<if test="param1=='teacher'">
+			update teacher set teacher_userPass=#{1} where teacher_id=#{2}
+		</if>
+		<if test="param1=='system'">
+			update system set system_userPass=#{1} where system_id=#{2}
+		</if>
+	</update>
+	<!-- 系统管理员登录 -->
+	<select id="login" resultType="team.sdm.po.System">
+		select * from xbq.system where system_userName=#{0} and system_userPass=#{1}
+	</select>
+	<!-- 查询登陆日志列表 -->
+	<select id="getAllLoginlog" resultType="team.sdm.po.Loginlog">
+		select * from loginlog limit #{0},#{1}
+	</select>
+	<!-- 查询登录日志的总条数 -->
+	<select id="getTotalCount" resultType="Integer">
+		select count(*) from loginlog
+	</select>
+	<!-- 模糊搜索登录日志 -->
+	<select id="getSearchList" resultType="team.sdm.po.Loginlog">
+		select * from loginlog where userName like concat('%',#{0},'%') limit #{1},#{2}
+	</select>
+	<select id="getSearchTotalCount" resultType="Integer">
+		select count(*) from loginlog where userName like concat('%',#{0},'%')
+	</select>
+	<!-- 删除日志信息 -->
+	<delete id="deleteLoginlogById" parameterType="Integer">
+		delete from loginlog where id=#{0}
+	</delete>
+	<!-- 根据id获取日志信息 -->
+	<select id="getLoginlogById" resultType="team.sdm.po.Loginlog">
+		select * from loginlog where id=#{0}
+	</select>
+	<!-- 修改某条日志信息 -->
+	<update id="editLoginlog" parameterType="team.sdm.po.Loginlog">
+		update loginlog set userName=#{userName},loginDate=#{loginDate},loginIP=#{loginIP},IPaddress=#{IPaddress} where id=#{id}
+	</update>
+	<insert id="addLog" parameterType="team.sdm.po.Loginlog">
+		insert into 
+		loginlog(IPaddress,loginDate,loginIP,userId,userName)
+		values(#{IPaddress},#{loginDate},#{loginIP},#{userId},#{userName})
+	</insert>
+</mapper>

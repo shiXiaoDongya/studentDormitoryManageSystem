@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.TeacherMapper">
+	<!-- 查询所有管理员信息 -->
+	<select id="getTeacherList" resultType="team.sdm.po.Teacher">
+		select * from teacher
+	</select>
+	<!-- 查询对应的管理员 -->
+	<select id="getTeacherByBuidingId" parameterType="Integer" resultType="Long">
+		select teacher_id from teacher_buidling where building_id = #{0}
+	</select>
+	<!-- 教师身份登录 -->
+	<select id="login" resultType="team.sdm.po.Teacher">
+		select * from teacher where teacher_userName=#{0} and teacher_userPass=#{1}
+	</select>
+	
+	<!-- 查询所有管理员信息 -->
+	<select id="getTeacherList1" resultType="team.sdm.po.Teacher">
+		select * from teacher where 1 = 1
+		<if test="teacher_name!=null">
+			and teacher_name  like CONCAT('%', #{teacher_name}, '%')
+		</if>
+		limit #{start},#{rows}
+	</select>
+	
+
+	<select id="getTeacherCount"  resultType="Integer">
+		select count(*) from teacher where 1=1
+		<if test="teacher_name!=null">
+			and teacher_name like CONCAT('%', #{teacher_name}, '%')
+		</if>
+	</select>
+
+	<select id="exportTeacher" resultType="team.sdm.po.Teacher">
+		select
+		teacher_id,teacher_userName,teacher_userPass,teacher_name,teacher_sex,teacher_tel
+		from teacher where 1 = 1
+		
+		<if test="Teacher.teacher_userName!=null">
+			and teacher_userName =
+			#{Teacher.teacher_userName}
+		</if>
+		<if test="Teacher.teacher_userPass!=null">
+			and teacher_userPass =
+			#{Teacher.teacher_userPass}
+		</if>
+		<if test="Teacher.teacher_name!=null">
+			and teacher_name =
+			#{Teacher.teacher_name}
+		</if>
+		<if test='page!="-1" and rows!="-1"'>
+			limit #{page}, #{rows}
+		</if>
+	</select>
+	<insert id="addTeacher" parameterType="team.sdm.po.Teacher">
+		insert into
+		teacher(teacher_name,teacher_userName,teacher_sex,teacher_tel,teacher_userPass)
+		values(#{teacher_name},#{teacher_userName},#{teacher_sex},#{teacher_tel},#{teacher_userPass})
+	</insert>
+
+
+	<update id="editTeacher" parameterType="team.sdm.po.Teacher">
+		update teacher set
+		teacher_name=#{teacher_name},teacher_userName=#{teacher_userName},teacher_sex=#{teacher_sex},teacher_tel=#{teacher_tel}
+		where teacher_id=#{teacher_id}
+	</update>
+
+	<delete id="deleteTeacher" parameterType="java.lang.Long">
+		delete from teacher
+		where teacher_id=#{teacher_id}
+	</delete>
+</mapper>

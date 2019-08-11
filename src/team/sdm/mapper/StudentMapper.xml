@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.StudentMapper">
+
+	<!-- lxd -->
+	<select id="login" resultType="team.sdm.po.Student">
+		select * from student where
+		student_userName=#{0} and student_userPass=#{1}
+	</select>
+	<select id="getStudentLackList"
+		resultType="team.sdm.po.Student_lack">
+		select * from student_lack where 1=1
+		<if test="param1!=null">
+			and student_name like concat('%',#{0},'%')
+		</if>
+		limit #{1},#{2}
+	</select>
+	<select id="getStudentLackCount" resultType="Integer">
+		select count(*) from
+		student_lack
+	</select>
+	<select id="getStudent_lack"
+		resultType="team.sdm.po.Student_lack">
+		select * from student_lack where student_id=#{0}
+	</select>
+	<select id="qryIfOfFlag" resultType="String">
+		select student_ifOk from student_lack where student_name=#{student_name}
+	</select>
+	<update id="updateLack">
+		update student_lack set student_ifOk="是" where
+		student_id=#{id}
+	</update>
+	<select id="getStudent" resultType="team.sdm.po.Student" parameterType="team.sdm.po.Student">
+		select * from student where 1=1
+		<if test="stu.student_id!=0">
+			and student_id = #{stu.student_id}
+		</if>
+		<if test="stu.student_userName!=null">
+			and student_userName = #{stu.student_userName}
+		</if>
+	</select>
+	<select id="getAllStudentLack"
+		resultType="team.sdm.po.Student_lack">
+		select * from student_lack
+	</select>
+	<update id="updateLackFlag">
+		update student set student_lackFlag = 1 where student_id=#{0}
+	</update>
+	<insert id="addStudentLack" parameterType="team.sdm.po.Student_lack">
+		insert into
+		student_lack(student_name, student_sex, student_institution, student_major, student_class, student_building, student_dorm, student_lackBeginTime, student_lackEndTime, student_remark, student_ifOk)
+		values(#{student_name}, #{student_sex}, #{student_institution}, #{student_major}, #{student_class}, #{student_building}, #{student_dorm}, #{student_lackBeginTime}, #{student_lackEndTime}, #{student_remark}, #{student_ifOk})
+	</insert>
+	<update id="changeStudentByChangeDorm">
+		update student
+		set student_building=(select building_name from building where building_id=#{1}),student_dorm=(select dorm_name from dorm where dorm_id=#{2}),student_remark=#{3}
+		where student_id=#{0}
+	</update>
+	<update id="changeStudentDorm">
+		update student_dorm
+		set dorm_id=#{0}
+		where student_id=#{1}
+	</update>
+
+	<!-- xwf -->
+	<insert id="addStudent" parameterType="team.sdm.po.StudentVo">
+		insert into
+		student(student_userName,student_name,student_sex,student_institution,student_major,student_class,student_phone,student_state,student_remark,student_headFlag)
+		values(#{student_userName},#{student_name},#{student_sex},#{student_institution},#{student_major},#{student_class},#{student_phone},#{student_state},#{student_remark},#{student_headFlag})
+	</insert>
+	<update id="updateStudentVo"
+		parameterType="team.sdm.po.StudentVo">
+		update student set
+		student_userName=#{student_userName},student_name=#{student_name},student_sex=#{student_sex},student_class=#{student_class},student_phone=#{student_phone},student_remark=#{student_remark},student_institution=#{student_institution},student_major=#{student_major}
+		<if test="student_state!=null">
+			, student_state=#{student_state}
+		</if>
+		<if test="student_headFlag!=null">
+			, student_headFlag=#{student_headFlag}
+		</if>
+		<if test="student_building!=null">
+			, student_building = #{student_building}
+		</if>
+		<if test="student_dorm!=null">
+			, student_dorm = #{student_dorm}
+		</if>
+		where student_id=#{student_id}
+	</update>
+	<delete id="deleteStudent" parameterType="java.lang.Long">
+		delete from student
+		where student_id= #{student_id}
+	</delete>
+	<delete id="deleteStudent_Dorm" parameterType="java.lang.Long">
+		delete from
+		student_dorm where student_id=#{student_id}
+	</delete>
+	<select id="findStudent" parameterType="team.sdm.po.StudentVo"
+		resultType="team.sdm.po.StudentVo">
+		select * from student where 1 = 1
+		<if test="student_id!=null">
+			and student_id = #{student_id}
+		</if>
+		<if test="student_name!=null">
+			and student_name = #{student_name}
+		</if>
+		<if test="student_class!=null">
+			and student_class = #{student_class}
+		</if>
+		<if test="student_phone!=null">
+			and student_phone = #{student_phone}
+		</if>
+		<if test="student_remark!=null">
+			and student_remark = #{student_remark}
+		</if>
+		<if test="student_sex!=null">
+			and student_sex = #{student_sex}
+		</if>
+
+		<if test="student_state!=null">
+			and student_state = #{student_state}
+		</if>
+		<if test="student_userName!=null">
+			and student_userName = #{student_userName}
+		</if>
+		<if test="student_userPass!=null">
+			and student_userPass = #{student_userPass}
+		</if>
+		<if test="out_date!=null">
+			and out_date = #{out_date}
+		</if>
+		<if test="student_institution!=null">
+			and student_institution = #{student_institution}
+		</if>
+		<if test="student_major!=null">
+			and student_major = #{student_major}
+		</if>
+		<if test="student_building!=null">
+			and student_building = #{student_building}
+		</if>
+		<if test="student_dorm!=null">
+			and student_dorm = #{student_dorm}
+		</if>
+		<if test="student_lackFlag!=null">
+			and student_lackFlag = #{student_lackFlag}
+		</if>
+		<if test="student_lackBeginTime!=null">
+			and student_lackBeginTime = #{student_lackBeginTime}
+		</if>
+		<if test="student_lackEndTime!=null">
+			and student_lackEndTime = #{student_lackEndTime}
+		</if>
+		<if test="student_headFlag!=null">
+			and student_headFlag = #{student_headFlag}
+		</if>
+		<if test="student_ifOk!=null">
+			and student_ifOk= #{student_ifOk}
+		</if>
+	</select>
+
+<select id="studentList" resultType="team.sdm.po.StudentVo">
+		select
+		student_id,student_userName,student_userPass,student_name,student_sex,student_institution,student_major,student_building,student_dorm,student_class,student_phone,student_state,student_remark,out_date,student_headFlag
+		from student where 1 = 1
+		<if test="StudentVo.student_state!=null">
+			and student_state = #{StudentVo.student_state}
+		</if>
+		<if test="StudentVo.student_institution!=null">
+			and student_institution =
+			#{StudentVo.student_institution}
+		</if>
+		<if test="StudentVo.student_class!=null">
+			and student_class like CONCAT('%',
+			#{StudentVo.student_class}, '%')
+		</if>
+		<if test="StudentVo.student_name!=null">
+			and student_name like CONCAT('%',
+			#{StudentVo.student_name}, '%')
+		</if>
+		<if test='page!="-1" and rows!="-1"'>
+			limit #{page}, #{rows}
+		</if>
+	</select>
+	<select id="studentCount" parameterType="team.sdm.po.StudentVo"
+		resultType="Integer">
+		select count(*) from student where 1 = 1
+		<if test="student_id!=null">
+			and student_id = #{student_id}
+		</if>
+		<if test="student_name!=null">
+			and student_name like CONCAT('%',
+			#{student_name}, '%')
+		</if>
+		<if test="student_class!=null">
+			and student_class like CONCAT('%',
+			#{student_class}, '%')
+		</if>
+		<if test="student_phone!=null">
+			and student_phone = #{student_phone}
+		</if>
+		<if test="student_remark!=null">
+			and student_remark = #{student_remark}
+		</if>
+		<if test="student_sex!=null">
+			and student_sex = #{student_sex}
+		</if>
+
+		<if test="student_state!=null">
+			and student_state = #{student_state}
+		</if>
+		<if test="student_userName!=null">
+			and student_userName = #{student_userName}
+		</if>
+		<if test="student_userPass!=null">
+			and student_userPass = #{student_userPass}
+		</if>
+		<if test="out_date!=null">
+			and out_date = #{out_date}
+		</if>
+		<if test="student_institution!=null">
+			and student_institution = #{student_institution}
+		</if>
+		<if test="student_major!=null">
+			and student_major = #{student_major}
+		</if>
+		<if test="student_building!=null">
+			and student_building = #{student_building}
+		</if>
+		<if test="student_dorm!=null">
+			and student_dorm = #{student_dorm}
+		</if>
+		<if test="student_lackFlag!=null">
+			and student_lackFlag = #{student_lackFlag}
+		</if>
+		<if test="student_lackBeginTime!=null">
+			and student_lackBeginTime = #{student_lackBeginTime}
+		</if>
+		<if test="student_lackEndTime!=null">
+			and student_lackEndTime = #{student_lackEndTime}
+		</if>
+		<if test="student_headFlag!=null">
+			and student_headFlag = #{student_headFlag}
+		</if>
+		<if test="student_ifOk!=null">
+			and student_ifOk= #{student_ifOk}
+		</if>
+	</select>
+	<select id="studentLackList" resultType="team.sdm.po.StudentVo">
+		select
+		student_id,student_name,student_sex,student_institution,student_major,student_building,student_dorm,student_class,student_remark,student_lackBeginTime,student_lackEndTime,student_ifOk
+		from student_lack where 1=1
+		<if test="StudentVo.student_name!=null">
+			and student_name like CONCAT('%',
+			#{StudentVo.student_name}, '%')
+		</if>
+		<if test='page!="-1" and rows!="-1"'>
+			limit #{page}, #{rows}
+		</if>
+	</select>
+	<select id="studentLackCount" resultType="Integer">
+		select
+		count(student_id) as student_id from student_lack
+	</select>
+
+	<insert id="inDorm">
+		insert into student_dorm(dorm_id,student_id)
+		values(#{Dorm.dorm_id},#{StudentVo.student_id})
+	</insert>
+</mapper>

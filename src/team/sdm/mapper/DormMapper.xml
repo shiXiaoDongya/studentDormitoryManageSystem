@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.DormMapper">
+	<select id="showDorm" resultType="team.sdm.po.Dorm">
+		select
+		dorm_id,dorm_building,dorm_name,dorm_type,dorm_people_num,dorm_tel
+		from dorm where 1=1
+		<if test="Dorm.dorm_name!=null">
+			and dorm_name like CONCAT('%',#{Dorm.dorm_name},'%')
+		</if>
+		<if test="Dorm.dorm_building!=null">
+			and dorm_building=#{Dorm.dorm_building}
+		</if>
+		<if test='page!="-1" and rows!="-1"'>
+			limit #{page},#{rows}
+		</if>
+	</select>
+	<select id="dormCount" resultType="Integer">
+		select count(*) from dorm
+	</select>
+	<select id="dormCount1" resultType="Integer"
+		parameterType="team.sdm.po.Dorm">
+		select count(*) from dorm where 1=1
+		<if test="dorm_building!=null">
+			and dorm_building=#{dorm_building}
+		</if>
+		<if test="dorm_name!=null">
+			and dorm_name like CONCAT('%',#{dorm_name},'%')
+		</if>
+	</select>
+	<select id="finddormbuilding" resultType="team.sdm.po.Dorm">
+		select * from dorm
+		where dorm_id=#{dorm_id}
+	</select>
+	<select id="findDormByBuildingId" resultType="team.sdm.po.Dorm"
+		parameterType="java.lang.Long">
+		select
+		d.dorm_id,d.dorm_name from dorm d, dorm_building
+		db where
+		d.dorm_id=db.dorm_id and db.building_id=#{0}
+	</select>
+	<select id="findDormByBuildingName"
+		resultType="team.sdm.po.Dorm" parameterType="String">
+		select
+		d.dorm_id,d.dorm_name from dorm d, dorm_building db, building b where
+		d.dorm_id=db.dorm_id and db.building_id = b.building_id and
+		b.building_name=#{_parameter}
+	</select>
+	<select id="findDormById" resultType="team.sdm.po.Dorm"
+		parameterType="java.lang.Long">
+		select * from dorm where dorm_id = #{0}
+	</select>
+	<select id="searchdorm" resultType="team.sdm.po.Dorm">
+		select * from dorm where where 1=1
+		<if test="Dorm.dorm_name!=null">
+			and dorm_name like CONCAT('%',#{Dorm.dorm_name},'%')
+		</if>
+		<if test="Dorm.dorm_building!=null">
+			and dorm_building=#{Dorm.dorm_building}
+		</if>
+	</select>
+
+	<select id="showSearchDorm" resultType="team.sdm.po.Dorm">
+		select * from dorm where
+		dorm_id=#{dorm_id}
+	</select>
+
+	<insert id="adddorm" parameterType="team.sdm.po.Dorm">
+		insert into
+		dorm(dorm_building,dorm_name,dorm_tel,dorm_type,dorm_people_num)
+		values(#{dorm_building},#{dorm_name},#{dorm_tel},#{dorm_type},#{dorm_people_num})
+	</insert>
+
+	<update id="editdorm" parameterType="team.sdm.po.Dorm">
+		update dorm set
+		dorm_building=#{dorm_building},dorm_name=#{dorm_name},dorm_tel=#{dorm_tel},dorm_type=#{dorm_type},dorm_people_num=#{dorm_people_num}
+		where dorm_id=#{dorm_id}
+	</update>
+
+	<delete id="deleteDorm" parameterType="java.lang.Long">
+		delete from dorm where
+		dorm_id=#{dorm_id}
+	</delete>
+
+
+
+	<select id="getDorm" resultType="team.sdm.po.Dorm">
+		select
+		d.dorm_id,dorm_name,dorm_people_num,dorm_tel,dorm_type,dorm_building
+		from student_dorm sd,dorm d where sd.dorm_id=d.dorm_id and
+		sd.student_id=#{0}
+	</select>
+	<select id="queryDormByBuilding" resultType="team.sdm.po.Dorm">
+		select * from
+		dorm_building db,dorm d where db.dorm_id=d.dorm_id and
+		db.building_id=#{0}
+	</select>
+	<update id="deleteDormPeople" parameterType="team.sdm.po.Dorm">
+		update dorm
+		set
+		dorm_people_num=dorm_people_num-1
+		where dorm_id=#{dorm_id}
+	</update>
+	<select id="getNum" resultType="team.sdm.po.Dorm">
+		select * from dorm where
+		dorm_id=#{0}
+	</select>
+	<update id="addPeople">
+		update dorm
+		set dorm_people_num = dorm_people_num+1
+		where dorm_id=#{0}
+	</update>
+	<insert id="addDormBuilding" parameterType="team.sdm.po.Dorm">
+		insert into
+		dorm_building(building_id,dorm_id)
+		values((select building_id from
+		building where building_name=#{dorm_building}),#{dorm_id})
+	</insert>
+	<select id="getDormByBuildngAndName"
+		resultType="team.sdm.po.Dorm" parameterType="team.sdm.po.Dorm">
+		select * from dorm where
+		dorm_name=#{dorm_name} and dorm_building=#{dorm_building}
+	</select>
+	<delete id="deleteDormBuilding">
+		delete from dorm_building
+		where dorm_id=#{0}
+	</delete>
+</mapper>

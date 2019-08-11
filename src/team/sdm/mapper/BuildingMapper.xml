@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.BuildingMapper">
+	<!-- select:查找所有楼宇信息 -->
+	<select id="getBuildingList" resultType="team.sdm.po.Building">
+		select * from building
+	</select>
+	<!-- insert:添加楼宇信息 -->
+	<insert id="addBuilding" >
+		insert building(building_name,building_remark)values(#{0},#{1})
+	</insert>
+	<!-- select:查找楼宇信息 by id -->
+	<select id="getBuildingById" parameterType="Integer" resultType="team.sdm.po.Building">
+		select * from building where building_id=#{0}
+	</select>
+	<!-- update:修改楼宇信息 -->
+	<update id="editBuilding" parameterType="team.sdm.po.Building">
+		update building set building_name=#{building_name},building_remark=#{building_remark} where building_id=#{building_id}
+	</update>
+	<!-- delete:删除楼宇信息 -->
+	<delete id="deleteBuildingById" parameterType="Integer">
+		delete from building where building_id=#{0}
+	</delete>
+	<!-- select:查找数据总条数 -->
+	<select id="getTotalCount" resultType="Integer">
+		select count(*) from building
+	</select>
+	<!-- select:条件搜索(building_name) -->
+	<select id="getSearchBuilding" resultType="team.sdm.po.Building">
+		select * from building where building_name like concat('%',#{0},'%') limit #{1},#{2}
+	</select>
+	<!-- delete:删除对应的管理员 -->
+	<delete id="deleteManagerByBuildingId" parameterType="Integer">
+		delete from teacher_buidling where building_id = #{0}
+	</delete>
+	<!-- insert:设置管理员 -->
+	<insert id="setBuildingManager">
+		insert into teacher_buidling(teacher_id,building_id) values(#{0},#{1})
+	</insert>
+	<!-- 分页显示列表 -->
+	<select id="getListByPage" resultType="team.sdm.po.Building">
+		select * from building limit #{0},#{1}
+	</select>
+	<select id="resBuildingCount" parameterType="String" resultType="Integer">
+		select count(*) from building where building_name like concat('%',#{0},'%')
+	</select>
+</mapper>

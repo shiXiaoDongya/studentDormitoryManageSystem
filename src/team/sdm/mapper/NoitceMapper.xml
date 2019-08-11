@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.sdm.mapper.NoitceMapper">
+	<insert id="addNotice" parameterType="team.sdm.po.Tab_notice">
+		insert into tab_notice(title, content, send_userName, send_person, send_role, send_time,rec_userName,rec_person,rec_role, msg_type, guid) values(#{title},#{content},#{send_userName},#{send_person},#{send_role},#{send_time},#{rec_userName},(select teacher_name from teacher where teacher_userName=#{rec_userName}),#{rec_role},#{msg_type},#{guid})
+	</insert>
+	<select id="getNoticeList" resultType="team.sdm.po.Tab_notice"
+		parameterType="team.sdm.po.Tab_notice">
+		select * from tab_notice where 1=1
+		<if test="notice.send_userName!=null">
+			and send_userName=#{notice.send_userName}
+		</if>
+		<if test="notice.see_state!=null">
+			and see_state = #{notice.see_state}
+		</if>
+		<if test="notice.send_person!=null">
+			and send_person like concat('%',#{notice.send_person},'%')
+		</if>
+		<if test="notice.rec_userName!=null">
+			and (rec_userName=#{notice.rec_userName} or rec_userName IS NULL)
+		</if>
+		<if test="notice.rec_role!=null">
+			and rec_role=#{notice.rec_role}
+		</if>
+		limit #{start},#{rows}
+	</select>
+	<select id="getNoticeCount" resultType="Integer" parameterType="team.sdm.po.Tab_notice">
+		select count(*) from tab_notice where 1=1
+		<if test="notice.send_userName!=null">
+			and send_userName=#{notice.send_userName}
+		</if>
+		<if test="notice.see_state!=null">
+			and see_state=#{notice.see_state}
+		</if>
+		<if test="notice.rec_userName!=null">
+			and (rec_userName=#{notice.rec_userName} or rec_userName IS NULL)
+		</if>
+		<if test="notice.rec_role!=null">
+			and rec_role=#{notice.rec_role}
+		</if>
+	</select>
+	<update id="updateNoticeByChangeDorm">
+		update tab_notice
+		set see_state="已确认",rec_userName=#{0},rec_person=(select teacher_name from teacher where teacher_userName=#{0})
+		where guid=#{1}
+	</update>
+	<select id="qryNotOkNotice" resultType="team.sdm.po.Tab_notice">
+		select * from tab_notice where see_state="否"
+		<if test="notice.rec_role!=null">
+			and rec_role=#{notice.rec_role}
+		</if>
+		<if test="notice.rec_userName!=null">
+			and (rec_userName=#{notice.rec_userName} or rec_userName IS NULL)
+		</if>
+	</select>
+		
+	<!-- 迁出登记:修改学生信息 -->
+	<update id="updateStudent">
+		update student set student_state='迁出',out_date=#{1}, student_remark=#{2} where student_id=#{0}
+	</update>
+	<!-- 获取学生对应的宿舍编号 -->
+	<select id="getDormIdBySid" resultType="Long">
+		select dorm_id from student_dorm where student_id=#{0}
+	</select>
+	<!-- 对应宿舍人数减1 -->
+	<update id="dormRemoveOne">
+		update dorm set dorm_people_num=dorm_people_num-1 where dorm_id=#{0}
+	</update>
+	<!-- 删除中间表信息 -->
+	<delete id="deleteDormMsg">
+		delete from student_dorm where student_id=#{0}
+	</delete>
+	<update id="updateNotice" parameterType="team.sdm.po.Tab_notice">
+		update tab_notice set see_state=#{see_state},rec_userName=#{rec_userName},rec_person=#{rec_person} where guid=#{guid}
+	</update>
+</mapper>

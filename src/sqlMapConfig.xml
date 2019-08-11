@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration 
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+<configuration>
+     <!-- 加载操作数据库的xml --> 
+     <mappers>
+           <mapper resource="team/sdm/mapper/StudentMapper.xml"/>
+           <mapper resource="team/sdm/mapper/NoitceMapper.xml"/>
+           <mapper resource="team/sdm/mapper/SystemMapper.xml"/>
+           <mapper resource="team/sdm/mapper/BuildingMapper.xml"/>
+           <mapper resource="team/sdm/mapper/TeacherMapper.xml"/>
+           <mapper resource="team/sdm/mapper/DormMapper.xml"/>
+     </mappers>
+</configuration>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns:tx="http://www.springframework.org/schema/tx"
+     xmlns:context="http://www.springframework.org/schema/context" 
+     xmlns:aop="http://www.springframework.org/schema/aop"
+     xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"> 
+     <!-- 加载我们的jdbc.properties -->
+     <context:property-placeholder location="classpath:jdbc.properties"/>
+     <!-- 通过dbcp创建数据源 -->
+     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+         <property name="driverClassName" value="${jdbc.driver}" />
+         <property name="url" value="${jdbc.url}" />
+         <property name="username" value="${jdbc.username}" />
+         <property name="password" value="${jdbc.password}" />
+     </bean>
+     <!-- 通过SqlSessionFactoryBean 创建 SqlSessionFactory对象 注入数据源 -->
+     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:sqlMapConfig.xml" />
+        <property name="dataSource" ref="dataSource" />
+     </bean>
+     <!-- 创建mapper动态代理类 扫描mapper包 -->
+     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="team.sdm.mapper" />
+     </bean>
+     <!-- 声明jdbc事务 -->
+     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+         <property name="dataSource" ref="dataSource" />
+     </bean>
+     <!-- 注解式事务管理器 注入jdbc事务 -->
+     <tx:annotation-driven transaction-manager="transactionManager" />
+</beans>
